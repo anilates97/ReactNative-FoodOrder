@@ -4,11 +4,13 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import * as Location from "expo-location";
-import { Octicons } from "@expo/vector-icons";
+import { Octicons, AntDesign } from "@expo/vector-icons";
+import Slider from "../../components/Slider";
 
 const index = () => {
   const [locationServicesEnabled, setLocationServicesEnabled] = useState(false);
@@ -100,6 +102,26 @@ const index = () => {
           <Text>A</Text>
         </Pressable>
       </View>
+
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          justifyContent: "space-between",
+          borderWidth: 1,
+          borderColor: "#c0c0c0",
+          paddingVertical: 8,
+          paddingHorizontal: 10,
+          borderRadius: 11,
+          marginTop: 10,
+          marginHorizontal: 10,
+        }}
+      >
+        <TextInput placeholder="Yemek ara" />
+        <AntDesign name="search1" size={24} color="#e52b50" />
+      </View>
+
+      <Slider />
     </ScrollView>
   );
 };
