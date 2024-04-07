@@ -2,10 +2,22 @@ import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { Hotels } from "../types/hotels";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { useNavigation } from "expo-router";
 
 export default function Hotel({ hotel }: Hotels) {
+  const navigation = useNavigation<any>();
   return (
     <Pressable
+      onPress={() =>
+        navigation.navigate("Hotel", {
+          id: hotel.id,
+          name: hotel.name,
+          address: hotel.address,
+          smallAddress: hotel.small_address,
+          cousines: hotel.cuisines,
+          aggregate_rating: hotel.aggregate_rating,
+        })
+      }
       style={{
         marginHorizontal: 6,
         marginVertical: 12,
