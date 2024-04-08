@@ -44,19 +44,19 @@ export const CartSlice = createSlice({
         state.cart[itemIndex].quantity++;
       }
     },
-    decrementQuantity: (state, action: PayloadAction<CartItem>) => {
+    decrementQuantity: (state, action: PayloadAction<{ id: string }>) => {
       const itemIndex = state.cart.findIndex(
         (item) => item.id === action.payload.id
       );
 
-      if (itemIndex !== -1) {
+      if (itemIndex !== -1 && state.cart[itemIndex].quantity > 1) {
+        state.cart[itemIndex].quantity--;
+      } else {
         const removeItem = state.cart.filter(
           (item) => item.id !== action.payload.id
         );
 
         state.cart = removeItem;
-      } else {
-        state.cart[itemIndex].quantity--;
       }
     },
     cleanCart: (state) => {

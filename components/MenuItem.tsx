@@ -1,9 +1,19 @@
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { SubMenu } from "../types/menus";
 import { FontAwesome } from "@expo/vector-icons";
+import { useDispatch } from "react-redux";
+import {
+  addToCart,
+  decrementQuantity,
+  incrementQuantity,
+  removeFromCart,
+} from "../store/CartReducer";
 
 const MenuItem = ({ subMenu }: SubMenu) => {
+  const [addItems, setAddItems] = useState(0);
+  const [selected, setSelected] = useState(false);
+  const dispatch = useDispatch();
   return (
     <View>
       <Pressable
@@ -48,25 +58,90 @@ const MenuItem = ({ subMenu }: SubMenu) => {
             style={{ width: 120, height: 120, borderRadius: 8 }}
           />
 
-          <Pressable
-            style={{
-              position: "absolute",
-              top: 95,
-              left: 20,
-              borderColor: "#e32636",
-              borderWidth: 1,
-              flexDirection: "row",
-              paddingHorizontal: 25,
-              paddingVertical: 5,
-              alignItems: "center",
-              backgroundColor: "white",
-              borderRadius: 5,
-            }}
-          >
-            <Text style={{ fontSize: 18, fontWeight: "600", color: "#fd5c63" }}>
-              EKLE
-            </Text>
-          </Pressable>
+          {selected ? (
+            <Pressable
+              style={{
+                position: "absolute",
+                top: 95,
+                left: 20,
+                flexDirection: "row",
+                paddingHorizontal: 10,
+                alignItems: "center",
+                backgroundColor: "#fd5c63",
+                borderRadius: 5,
+              }}
+            >
+              <Pressable
+                onPress={() => {
+                  if (addItems === 1) {
+                    dispatch(removeFromCart(subMenu));
+                    setAddItems(0);
+                    setSelected(false);
+                    return;
+                  } else {
+                    setAddItems((c) => c - 1);
+                    dispatch(decrementQuantity(subMenu));
+                  }
+                }}
+              >
+                <Text
+                  style={{ fontSize: 25, color: "white", paddingHorizontal: 6 }}
+                >
+                  -
+                </Text>
+              </Pressable>
+
+              <Pressable>
+                <Text
+                  style={{ fontSize: 25, color: "white", paddingHorizontal: 6 }}
+                >
+                  {addItems}
+                </Text>
+              </Pressable>
+
+              <Pressable
+                onPress={() => {
+                  setAddItems((c) => c + 1);
+                  dispatch(incrementQuantity(subMenu));
+                }}
+              >
+                <Text
+                  style={{ fontSize: 17, color: "white", paddingHorizontal: 6 }}
+                >
+                  +
+                </Text>
+              </Pressable>
+            </Pressable>
+          ) : (
+            <Pressable
+              onPress={() => {
+                setSelected(true);
+                if (addItems === 0) {
+                  setAddItems((c) => c + 1);
+                }
+                dispatch(addToCart(subMenu));
+              }}
+              style={{
+                position: "absolute",
+                top: 95,
+                left: 20,
+                borderColor: "#e32636",
+                borderWidth: 1,
+                flexDirection: "row",
+                paddingHorizontal: 25,
+                paddingVertical: 5,
+                alignItems: "center",
+                backgroundColor: "white",
+                borderRadius: 5,
+              }}
+            >
+              <Text
+                style={{ fontSize: 18, fontWeight: "600", color: "#fd5c63" }}
+              >
+                EKLE
+              </Text>
+            </Pressable>
+          )}
         </Pressable>
       </Pressable>
     </View>

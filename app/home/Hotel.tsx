@@ -3,6 +3,7 @@ import React from "react";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { Ionicons, SimpleLineIcons } from "@expo/vector-icons";
 import FoodItem from "../../components/FoodItem";
+import { useSelector } from "react-redux";
 
 type SearchParams = {
   id: string;
@@ -194,6 +195,8 @@ export default function Hotel() {
     },
   ];
 
+  const cart = useSelector((state: any) => state.cart.cart);
+
   return (
     <ScrollView style={{ backgroundColor: "white" }}>
       <View
@@ -291,7 +294,7 @@ export default function Hotel() {
       </View>
 
       {menu?.map((item, index) => (
-        <FoodItem key={item.id} menu={item} />
+        <FoodItem key={index} menu={item} />
       ))}
     </ScrollView>
   );
