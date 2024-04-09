@@ -1,9 +1,18 @@
-import { ScrollView, StyleSheet, Text, View } from "react-native";
-import React from "react";
+import {
+  Animated,
+  Image,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+import React, { useRef, useState } from "react";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { Ionicons, SimpleLineIcons } from "@expo/vector-icons";
 import FoodItem from "../../components/FoodItem";
 import { useSelector } from "react-redux";
+import Modal from "react-native-modal";
 
 type SearchParams = {
   id: string;
@@ -195,108 +204,263 @@ export default function Hotel() {
     },
   ];
 
+  const scrollViewRef = useRef<any>(null);
+  const scrollAnim = useRef(new Animated.Value(0)).current;
+  const ITEM_HEIGHT = 650;
+
+  const scrollToCategory = (index: number) => {
+    const yOffSet = index * ITEM_HEIGHT;
+    Animated.timing(scrollAnim, {
+      toValue: yOffSet,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
+
+    scrollViewRef.current.scrollTo({ y: yOffSet, animated: true });
+  };
+
+  const [modalVisible, setModalVisible] = useState(false);
+
   const cart = useSelector((state: any) => state.cart.cart);
 
   return (
-    <ScrollView style={{ backgroundColor: "white" }}>
-      <View
-        style={{
-          marginTop: 5,
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <Ionicons
-          onPress={() => navigation.goBack()}
-          name="arrow-back"
-          size={24}
-          color="black"
-          style={{ padding: 5 }}
-        />
-
+    <>
+      <ScrollView style={{ backgroundColor: "white" }} ref={scrollViewRef}>
         <View
-          style={{
-            flexDirection: "row",
-            alignItems: "center",
-            paddingHorizontal: 14,
-            gap: 10,
-          }}
-        >
-          <SimpleLineIcons name="camera" size={24} color="black" />
-          <Ionicons name="bookmark-outline" size={24} color="black" />
-          <Ionicons name="share-outline" size={24} color="black" />
-        </View>
-      </View>
-
-      <View
-        style={{
-          justifyContent: "center",
-          alignItems: "center",
-          marginVertical: 12,
-        }}
-      >
-        <Text style={{ fontSize: 20, fontWeight: "bold" }}>{hotel?.name}</Text>
-        <Text
           style={{
             marginTop: 5,
-            color: "gray",
-            fontWeight: "500",
-            fontSize: 15,
-          }}
-        >
-          {" "}
-          Türk Mutfağı • Fast Food • Kişi Başı 160₺
-        </Text>
-        <View
-          style={{
             flexDirection: "row",
             alignItems: "center",
-            gap: 4,
-            marginTop: 10,
+            justifyContent: "space-between",
           }}
         >
+          <Ionicons
+            onPress={() => navigation.goBack()}
+            name="arrow-back"
+            size={24}
+            color="black"
+            style={{ padding: 5 }}
+          />
+
           <View
             style={{
               flexDirection: "row",
-
               alignItems: "center",
-              backgroundColor: "#006a4e",
-              borderRadius: 4,
-              paddingHorizontal: 4,
-              paddingVertical: 5,
-              gap: 5,
+              paddingHorizontal: 14,
+              gap: 10,
             }}
           >
-            <Text style={{ color: "white", fontSize: 14, fontWeight: "bold" }}>
-              {hotel?.aggregate_rating}
-            </Text>
-            <Ionicons name="star" size={15} color="white" />
+            <SimpleLineIcons name="camera" size={24} color="black" />
+            <Ionicons name="bookmark-outline" size={24} color="black" />
+            <Ionicons name="share-outline" size={24} color="black" />
           </View>
-          <Text style={{ fontSize: 15, fontWeight: "500", marginLeft: 5 }}>
-            3.7K Görüntülenme
-          </Text>
         </View>
 
         <View
           style={{
             justifyContent: "center",
             alignItems: "center",
-            backgroundColor: "#d0f0c0",
-            borderRadius: 20,
-            paddingHorizontal: 10,
-            paddingVertical: 5,
-            marginTop: 12,
+            marginVertical: 12,
           }}
         >
-          <Text>30 - 40 dakika 📍 6 km | İstanbul</Text>
+          <Text style={{ fontSize: 20, fontWeight: "bold" }}>
+            {hotel?.name}
+          </Text>
+          <Text
+            style={{
+              marginTop: 5,
+              color: "gray",
+              fontWeight: "500",
+              fontSize: 15,
+            }}
+          >
+            {" "}
+            Türk Mutfağı • Fast Food • Kişi Başı 160₺
+          </Text>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 4,
+              marginTop: 10,
+            }}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+
+                alignItems: "center",
+                backgroundColor: "#006a4e",
+                borderRadius: 4,
+                paddingHorizontal: 4,
+                paddingVertical: 5,
+                gap: 5,
+              }}
+            >
+              <Text
+                style={{ color: "white", fontSize: 14, fontWeight: "bold" }}
+              >
+                {hotel?.aggregate_rating}
+              </Text>
+              <Ionicons name="star" size={15} color="white" />
+            </View>
+            <Text style={{ fontSize: 15, fontWeight: "500", marginLeft: 5 }}>
+              3.7K Görüntülenme
+            </Text>
+          </View>
+
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "#d0f0c0",
+              borderRadius: 20,
+              paddingHorizontal: 10,
+              paddingVertical: 5,
+              marginTop: 12,
+            }}
+          >
+            <Text>30 - 40 dakika 📍 6 km | İstanbul</Text>
+          </View>
         </View>
+
+        {menu?.map((item, index) => (
+          <FoodItem key={index} menu={item} />
+        ))}
+      </ScrollView>
+
+      <View style={{ flexDirection: "row", backgroundColor: "white" }}>
+        {menu?.map((item, index) => (
+          <Pressable
+            onPress={() => scrollToCategory(index)}
+            style={{
+              paddingHorizontal: 7,
+              borderRadius: 4,
+              paddingVertical: 5,
+              marginVertical: 10,
+              marginHorizontal: 10,
+              alignItems: "center",
+              justifyContent: "center",
+              borderColor: "#181818",
+              borderWidth: 1,
+            }}
+          >
+            <Text>{item?.name}</Text>
+          </Pressable>
+        ))}
       </View>
 
-      {menu?.map((item, index) => (
-        <FoodItem key={index} menu={item} />
-      ))}
-    </ScrollView>
+      <Pressable
+        onPress={() => setModalVisible(!modalVisible)}
+        style={{
+          width: 60,
+          height: 60,
+          borderRadius: 30,
+          justifyContent: "center",
+          alignItems: "center",
+          position: "absolute",
+          right: 25,
+          bottom: cart?.length > 0 ? 95 : 35,
+          backgroundColor: "#393535",
+        }}
+      >
+        <Ionicons
+          name="fast-food-outline"
+          size={24}
+          color="white"
+          style={{ textAlign: "center" }}
+        />
+        <Text
+          style={{
+            textAlign: "center",
+            color: "white",
+            fontWeight: "500",
+            fontSize: 11,
+            marginTop: 3,
+          }}
+        >
+          MENÜ
+        </Text>
+      </Pressable>
+
+      <Modal
+        isVisible={modalVisible}
+        onBackdropPress={() => setModalVisible(!modalVisible)}
+      >
+        <View
+          style={{
+            height: 320,
+            width: 250,
+            backgroundColor: "#393535",
+            position: "absolute",
+            bottom: 35,
+            right: 10,
+            borderRadius: 7,
+          }}
+        >
+          {menu?.map((item, index) => (
+            <View
+              style={{
+                padding: 10,
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <Text
+                style={{ color: "#d0d0d0", fontWeight: "600", fontSize: 18 }}
+              >
+                {item?.name}
+              </Text>
+              <Text
+                style={{ color: "#d0d0d0", fontWeight: "600", fontSize: 18 }}
+              >
+                {item?.items.length}
+              </Text>
+            </View>
+          ))}
+          <View style={{ justifyContent: "center", alignItems: "center" }}>
+            <Image
+              style={{ width: 120, height: 70, resizeMode: "contain" }}
+              source={require("../../assets/pngegg.png")}
+            />
+          </View>
+        </View>
+      </Modal>
+
+      {cart?.length > 0 && (
+        <Pressable
+          style={{
+            backgroundColor: "#fd5c63",
+            paddingHorizontal: 10,
+            paddingVertical: 10,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Text
+            style={{
+              textAlign: "center",
+              color: "white",
+              fontSize: 15,
+              fontWeight: "600",
+            }}
+          >
+            {cart.length} yemek eklendi
+          </Text>
+          <Text
+            style={{
+              textAlign: "center",
+              color: "black",
+              marginTop: 5,
+              fontWeight: "bold",
+            }}
+          >
+            35 ₺ indirim kazanmak için 240 ₺ değerinde ürün ekleyin.
+          </Text>
+        </Pressable>
+      )}
+    </>
   );
 }
 
