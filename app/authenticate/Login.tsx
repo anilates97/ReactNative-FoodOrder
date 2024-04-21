@@ -7,11 +7,16 @@ import {
   TextInput,
   View,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 
 import { MaterialIcons, AntDesign } from "@expo/vector-icons";
+import { useNavigation } from "expo-router";
 
 export default function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const navigation = useNavigation<any>();
   return (
     <SafeAreaView
       style={{ flex: 1, backgroundColor: "white", alignItems: "center" }}
@@ -55,6 +60,8 @@ export default function Login() {
               style={{ marginLeft: 8 }}
             />
             <TextInput
+              onChangeText={(text) => setEmail(text)}
+              value={email}
               placeholder="Mail adresinizi girin"
               style={{ color: "gray", marginVertical: 10, width: 300 }}
             />
@@ -78,6 +85,8 @@ export default function Login() {
               style={{ marginLeft: 8 }}
             />
             <TextInput
+              onChangeText={(pass) => setPassword(pass)}
+              value={password}
               placeholder="Şifrenizi adresinizi girin"
               style={{ color: "gray", marginVertical: 10, width: 300 }}
             />
@@ -120,6 +129,7 @@ export default function Login() {
         </Pressable>
 
         <Pressable
+          onPress={() => navigation.navigate("Register")}
           style={{
             marginTop: 15,
           }}
