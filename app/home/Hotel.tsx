@@ -430,6 +430,11 @@ export default function Hotel() {
 
       {cart?.length > 0 && (
         <Pressable
+          onPress={() =>
+            navigation.navigate("Cart", {
+              name: hotel.name,
+            })
+          }
           style={{
             backgroundColor: "#fd5c63",
             paddingHorizontal: 10,

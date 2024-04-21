@@ -8,6 +8,8 @@ export default function Layout() {
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="index" />
         <Stack.Screen name="Hotel" />
+        <Stack.Screen name="Cart" />
+        <Stack.Screen name="Order" />
       </Stack>
     </Provider>
   );
