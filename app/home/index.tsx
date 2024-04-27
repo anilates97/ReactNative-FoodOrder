@@ -14,12 +14,14 @@ import { Octicons, AntDesign, Ionicons } from "@expo/vector-icons";
 import Slider from "../../components/Slider";
 import Categories from "../../components/Categories";
 import Hotel from "../../components/Hotel";
+import { supabase } from "../../supabase";
 
 const index = () => {
   const [locationServicesEnabled, setLocationServicesEnabled] = useState(false);
   const [displayCurrentAddress, setDisplayCurrentAddress] = useState(
     "konumunuz bulunuyor..."
   );
+  const [data, setData] = useState<any>([]);
 
   useEffect(() => {
     checkIfLocationEnabled();
@@ -472,6 +474,22 @@ const index = () => {
     },
   ];
 
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const { data, error } = await supabase.from("hotels").select("*");
+        if (error) {
+          throw new Error("Datayı çekerken hata oluştu");
+        } else {
+          setData(data);
+        }
+      } catch (e: unknown) {
+        console.log(e);
+      }
+    }
+    fetchData();
+  }, []);
+
   return (
     <ScrollView style={{ flex: 1, backgroundColor: "#f8f8f8" }}>
       <View
@@ -641,7 +659,7 @@ const index = () => {
       </Text>
 
       <View style={{ marginHorizontal: 8 }}>
-        {hotels?.map((item, index) => (
+        {data?.map((item: any, index: number) => (
           <Hotel key={item.id} hotel={item} />
         ))}
       </View>

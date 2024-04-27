@@ -6,6 +6,9 @@ import { useNavigation } from "expo-router";
 
 export default function Hotel({ hotel }: Hotels) {
   const navigation = useNavigation<any>();
+
+  const menuItems = JSON.stringify(hotel.menu);
+
   return (
     <Pressable
       onPress={() =>
@@ -16,6 +19,7 @@ export default function Hotel({ hotel }: Hotels) {
           smallAddress: hotel.small_address,
           cousines: hotel.cuisines,
           aggregate_rating: hotel.aggregate_rating,
+          menu: menuItems,
         })
       }
       style={{
@@ -62,7 +66,7 @@ export default function Hotel({ hotel }: Hotels) {
               color: "gray",
             }}
           >
-            Türk Mutfağı • Fast Food • Kişi Başı 160₺
+            {hotel?.description}
           </Text>
           <Text
             style={{

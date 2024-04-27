@@ -8,11 +8,13 @@ export interface Hotels {
     average_cost_for_two: number;
     aggregate_rating: number;
     address: string;
+    description: string;
     small_address: string;
     offer: string;
     no_of_delivery: number;
     latitude: number;
     longitude: number;
+    menu: any;
   };
 }
 
@@ -29,5 +31,6 @@ export interface Hotel {
   offer: string;
   no_of_delivery: number;
   latitude: number;
+  menu: any;
   longitude: number;
 }

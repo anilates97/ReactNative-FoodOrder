@@ -18,3 +18,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 });
+
+//https://kohrfbcqmztneebgnbhf.supabase.co
+//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtvaHJmYmNxbXp0bmVlYmduYmhmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTM2NjQ4NDgsImV4cCI6MjAyOTI0MDg0OH0.xA3uau6Bz4qYCPuYS8dabZKjWqvsFgr1nSQZzBEL9g4

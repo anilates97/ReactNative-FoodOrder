@@ -1,4 +1,5 @@
 import {
+  Alert,
   KeyboardAvoidingView,
   Pressable,
   SafeAreaView,
@@ -11,6 +12,7 @@ import React, { useState } from "react";
 
 import { AntDesign, Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useNavigation } from "expo-router";
+import { supabase } from "../../supabase";
 
 export default function Register() {
   const [email, setEmail] = useState("");
@@ -18,6 +20,29 @@ export default function Register() {
   const [name, setName] = useState("");
 
   const navigation = useNavigation<any>();
+
+  async function signUpNewUser() {
+    const { data, error } = await supabase.auth.signUp({
+      options: {
+        data: {
+          name: name,
+        },
+      },
+      email: email,
+      password: password,
+    });
+
+    if (data?.user?.role === "authenticated") {
+      Alert.alert(
+        "Başarıyla kayıt oldunuz",
+        "Lütfen onay için emailinizi kontrol ediniz"
+      );
+    }
+
+    if (error) {
+      Alert.alert("Kayıt olurken hata oluştu", "Lütfen tekrar deneyiniz");
+    }
+  }
 
   return (
     <SafeAreaView
@@ -112,6 +137,7 @@ export default function Register() {
               style={{ marginLeft: 8 }}
             />
             <TextInput
+              secureTextEntry
               onChangeText={(pass) => setPassword(pass)}
               value={password}
               placeholder="Şifrenizi adresinizi girin"
@@ -133,6 +159,7 @@ export default function Register() {
         </View>
 
         <Pressable
+          onPress={signUpNewUser}
           style={{
             width: 200,
             backgroundColor: "#fd5c63",
@@ -151,7 +178,7 @@ export default function Register() {
               color: "white",
             }}
           >
-            Giriş yap
+            Kayıt ol
           </Text>
         </Pressable>
 

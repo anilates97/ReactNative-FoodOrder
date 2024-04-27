@@ -21,6 +21,7 @@ type SearchParams = {
   address: string;
   cuisines: string;
   small_address: string;
+  menu: any;
 };
 
 export default function Hotel() {
@@ -220,6 +221,7 @@ export default function Hotel() {
   };
 
   const [modalVisible, setModalVisible] = useState(false);
+  const recievedMenu = JSON.parse(hotel?.menu);
 
   const cart = useSelector((state: any) => state.cart.cart);
 
@@ -324,13 +326,13 @@ export default function Hotel() {
           </View>
         </View>
 
-        {menu?.map((item, index) => (
+        {recievedMenu?.map((item: any, index: number) => (
           <FoodItem key={index} menu={item} />
         ))}
       </ScrollView>
 
       <View style={{ flexDirection: "row", backgroundColor: "white" }}>
-        {menu?.map((item, index) => (
+        {recievedMenu?.map((item: any, index: number) => (
           <Pressable
             onPress={() => scrollToCategory(index)}
             style={{
@@ -398,7 +400,7 @@ export default function Hotel() {
             borderRadius: 7,
           }}
         >
-          {menu?.map((item, index) => (
+          {recievedMenu?.map((item: any, index: number) => (
             <View
               style={{
                 padding: 10,

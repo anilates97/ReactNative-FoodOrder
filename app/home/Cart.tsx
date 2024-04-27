@@ -54,7 +54,6 @@ export default function Cart() {
     ?.map((item) => item.quantity * item.price)
     .reduce((curr, prev) => curr + prev, 0);
 
-  console.log("cart", cartArr);
   return (
     <>
       <ScrollView style={{ padding: 10, flex: 1, backgroundColor: "#f0f8ff" }}>

@@ -1,4 +1,5 @@
 import {
+  Alert,
   KeyboardAvoidingView,
   Pressable,
   SafeAreaView,
@@ -7,16 +8,47 @@ import {
   TextInput,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { MaterialIcons, AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "expo-router";
+import { supabase } from "../../supabase";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const navigation = useNavigation<any>();
+
+  useEffect(() => {
+    const checkLogin = async () => {
+      try {
+        const token = await AsyncStorage.getItem("authToken");
+        if (token) {
+          navigation.navigate("home", { replace: true });
+        }
+      } catch (error: any) {}
+    };
+    checkLogin();
+  }, []);
+
+  async function signInWithEmail() {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: password,
+    });
+
+    if (data) {
+      const token = data?.session?.access_token;
+      AsyncStorage.setItem("authToken", token || "");
+      navigation.navigate("home", { replace: true });
+    }
+
+    if (error) {
+      Alert.alert("Kayıt olurken hata oluştu", "Lütfen tekrar deneyiniz");
+    }
+  }
   return (
     <SafeAreaView
       style={{ flex: 1, backgroundColor: "white", alignItems: "center" }}
@@ -85,6 +117,7 @@ export default function Login() {
               style={{ marginLeft: 8 }}
             />
             <TextInput
+              secureTextEntry
               onChangeText={(pass) => setPassword(pass)}
               value={password}
               placeholder="Şifrenizi adresinizi girin"
@@ -106,6 +139,7 @@ export default function Login() {
         </View>
 
         <Pressable
+          onPress={signInWithEmail}
           style={{
             width: 200,
             backgroundColor: "#fd5c63",
